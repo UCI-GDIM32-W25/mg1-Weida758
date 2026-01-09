@@ -13,16 +13,38 @@ public class Player : MonoBehaviour
 
     private void Start ()
     {
-        
+        _numSeedsLeft = _numSeeds;
+        _plantCountUI.UpdateSeeds(_numSeedsLeft, _numSeedsPlanted);
     }
 
     private void Update()
     {
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+
+        Vector3 movement = new Vector3(x, y).normalized;
         
+        _playerTransform.Translate(movement * _speed * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            PlantSeed();
+        }
     }
 
     public void PlantSeed ()
     {
+        if (_numSeedsLeft > 0)
+        {
+            _numSeedsLeft--;
+            _numSeedsPlanted++;
+            Instantiate(_plantPrefab, _playerTransform.position, _plantPrefab.transform.rotation);
+            _plantCountUI.UpdateSeeds(_numSeedsLeft, _numSeedsPlanted);
+        }
+        else
+        {
+            Debug.Log("No seeds left");
+        }
         
     }
 }
